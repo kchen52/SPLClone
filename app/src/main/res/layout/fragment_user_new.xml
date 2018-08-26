@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dashboard stuff -->
+<android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.design.widget.AppBarLayout
+        android:paddingTop="27dp"
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"
+        android:layout_height="100dp">
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_marginStart="15dp"
+            android:layout_gravity="bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="40sp" />
+        <ImageView
+            android:id="@+id/barcode_image_view"
+            android:visibility="gone"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_marginTop="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:orientation="horizontal" >
+
+        <android.support.design.card.MaterialCardView
+            android:id="@+id/checked_out_cardview"
+            android:clickable="true"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:strokeColor="@color/colorPrimaryDark"
+            app:strokeWidth="2dp"
+            android:focusable="true">
+            <LinearLayout
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/checked_out_cardview_icon"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textStyle="bold"
+                    android:textSize="40sp"
+                    android:textColor="#000000"
+                    android:background="@drawable/count_circle" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:textSize="18sp"
+                    android:text="@string/checked_out_items"/>
+            </LinearLayout>
+        </android.support.design.card.MaterialCardView>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <android.support.design.card.MaterialCardView
+            android:clickable="true"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:strokeColor="@color/colorPrimaryDark"
+            app:strokeWidth="2dp"
+            android:focusable="true">
+            <LinearLayout
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_launcher_round"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/items_on_hold"/>
+            </LinearLayout>
+        </android.support.design.card.MaterialCardView>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

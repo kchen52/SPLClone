@@ -1,28 +1,31 @@
 package libraryapp.kchen52.com.surreypubliclibraryclone.fragment
 
 import android.os.Bundle
+import android.support.design.button.MaterialButton
+import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import libraryapp.kchen52.com.surreypubliclibraryclone.HTTPRequest
 import libraryapp.kchen52.com.surreypubliclibraryclone.OnFinishListener
 import libraryapp.kchen52.com.surreypubliclibraryclone.R
+import libraryapp.kchen52.com.surreypubliclibraryclone.exception.LoginFailedException
 import libraryapp.kchen52.com.surreypubliclibraryclone.user.User
 import libraryapp.kchen52.com.surreypubliclibraryclone.user.UserManager
+import libraryapp.kchen52.com.surreypubliclibraryclone.util.Util
 import okhttp3.Response
 
 class LoginFragment : Fragment() {
 
     private val loginUrl = "https://surrey.bibliocommons.com/api/Library/71/logIn"
-    private lateinit var usernameTV : TextView
-    private lateinit var passwordTV : TextView
-    private lateinit var loginButton : Button
+    private lateinit var usernameTV : TextInputEditText
+    private lateinit var passwordTV : TextInputEditText
+    private lateinit var loginButton : MaterialButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
@@ -36,25 +39,41 @@ class LoginFragment : Fragment() {
 
         var onFinishListener = object : OnFinishListener {
             override fun onFinish(response: Response) {
-                if (response.body() != null) {
+                var responseBody = response.body()!!.string()
+                if (responseBody != null && ! responseContainsException(responseBody)) {
+
                     val userManager = UserManager
-                    var user = User(response.body()!!.string())
+                    var user = User(responseBody)
                     userManager.setUser(user)
 
-                    val ft = activity!!.supportFragmentManager.beginTransaction()
-                    ft.replace(R.id.upper_fragment, MyFragmentManager.getUserFragment())
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    ft.commit()
+                    // TODO: Persist the user as a SharedPref object
+                    var onFinishListener = object : OnFinishListener {
+                        override fun onFinish(response: Response) {
+                            activity!!.runOnUiThread {
+                                var viewPager = activity?.findViewById<ViewPager>(R.id.viewpager)
+                                Util.setupViewPager(viewPager!!, fragmentManager!!, 2)
+                            }
+                        }
+                        override fun onFailure(exception: Exception) {
+                            // Something wrong happened
+                            exception.printStackTrace()
+                        }
+                    }
+                    Util.checkIfTokenValid(user.sessionId, onFinishListener)
+                } else {
+                    onFailure(LoginFailedException(responseBody))
                 }
                 // Parse then data, and refresh the page
             }
 
             override fun onFailure(exception: Exception) {
-                Toast.makeText(activity!!.applicationContext, exception.message, Toast.LENGTH_LONG).show()
+                activity?.runOnUiThread {
+                    Toast.makeText(activity!!.applicationContext, exception.message, Toast.LENGTH_LONG).show()
+                }
             }
         }
 
-        loginButton.setOnClickListener({
+        loginButton.setOnClickListener {
             if (usernameTV.text.toString().isBlank() || passwordTV.text.toString().isBlank()) {
                 Toast.makeText(activity!!.applicationContext, "Username or password cannot be blank.", Toast.LENGTH_LONG).show()
             } else {
@@ -62,7 +81,12 @@ class LoginFragment : Fragment() {
                 loadingDialog.show(fragmentManager!!.beginTransaction(), "loading dialog")
                 HTTPRequest().makeRequest("$loginUrl/${usernameTV.text}/${passwordTV.text}", onFinishListener, loadingDialog)
             }
-        })
+        }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    // TODO: Make this WAAAAAY better
+    private fun responseContainsException(response : String) : Boolean {
+        return response.contains("Exception")
     }
 }

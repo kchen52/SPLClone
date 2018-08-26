@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_catalog"
+        android:icon="@drawable/outline_local_library_24"
+        android:title="Catalog" />
+
+    <item
+        android:id="@+id/action_library"
+        android:icon="@drawable/outline_place_24"
+        android:title="Libraries" />
+
+    <item
+        android:id="@+id/action_profile"
+        android:icon="@drawable/outline_person_24"
+        android:title="Profile" />
+</menu>

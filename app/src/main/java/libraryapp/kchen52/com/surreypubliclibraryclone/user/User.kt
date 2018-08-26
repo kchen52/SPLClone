@@ -1,12 +1,14 @@
 package libraryapp.kchen52.com.surreypubliclibraryclone.user
 
 import libraryapp.kchen52.com.surreypubliclibraryclone.XMLUtil
+import libraryapp.kchen52.com.surreypubliclibraryclone.book.Book
 import org.w3c.dom.Document
 import org.w3c.dom.Text
 import java.io.Serializable
 
 // Given the user information (in the form of XML sadly) parse and extract the information
 class User(userInformation: String) {
+    // TODO: Convert the following to JSON
     val informationAsXML : Document = XMLUtil.convertStringToDocument(userInformation)
     val firstName : String = (informationAsXML.getElementsByTagName("FirstName").item(0).firstChild as Text).wholeText
     val lastName : String = (informationAsXML.getElementsByTagName("LastName").item(0).firstChild as Text).wholeText
@@ -24,6 +26,8 @@ class User(userInformation: String) {
     val email : String = (informationAsXML.getElementsByTagName("Email").item(0).firstChild as Text).wholeText
     val sessionId : String = (informationAsXML.getElementsByTagName("SessionId").item(0).firstChild as Text).wholeText
     val bcId : String = (informationAsXML.getElementsByTagName("BcId").item(0).firstChild as Text).wholeText
+
+    var checkedOutBooks : ArrayList<Book> = ArrayList()
 
     override fun toString() : String {
         return "firstName: $firstName\n" +
